@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
       type: DataTypes.FLOAT,
       allowNull: true
     },
-    platform:{
+    platforms:{
       type: DataTypes.STRING,
       allowNull: false
     },

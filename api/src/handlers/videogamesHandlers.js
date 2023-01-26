@@ -1,4 +1,6 @@
-const { searchGamesByName, getAllGames } = require("../controllers/videogamesControllers");
+const { json } = require("body-parser");
+const { query } = require("express");
+const { searchGamesByName, getAllGames, createGames, getVideogamesById } = require("../controllers/videogamesControllers");
 
 const getGamesHandlers = async (req, res) => {
     const { name } = req.query;
@@ -12,13 +14,28 @@ const getGamesHandlers = async (req, res) => {
     // }
 };
 
-const getGamesHandlersId = (req, res) => {
+const getGamesHandlersId = async (req, res) => {
     const {id} = req.params;
-    res.send(`busca por id ${id}`);
+    // res.send(`busca por id ${id}`);
+    const source = isNaN(id) ? "bdd" : "api";
+    try {
+        const game = await getVideogamesById(id, source);
+        res.status(200).json(game);
+    } catch (error) {
+        res.status(400).json({error : error.message});
+    }
 };
 
-const createGamesHandlers = (req, res) => {
-    res.send("crea un videogames");
+const createGamesHandlers = async (req, res) => {
+    const { name, description, rating, platforms, released, genres } = req.body;
+
+    try {
+        const newVideogames = await createGames(name,description,rating,platforms,released,genres);
+        res.status(201).json(newVideogames);
+    } catch (error) {
+        res.status(400).json({error : error.message});
+    }
+    
 };
 
 module.exports={
